@@ -1,0 +1,123 @@
+//Nestor Stiven Aguilar Garzon - 6000423
+
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Grupo de cubos</title>
+  <style>
+    body {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <script type="module">
+    import * as THREE from 'https://sebastiann16.github.io/CompG/three.module.js';
+    import { OrbitControls } from 'https://sebastiann16.github.io/CompG/OrbitControls.js';
+    var WIDTH = window.innerWidth;
+    var HEIGHT = window.innerHeight;
+
+    var renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(WIDTH, HEIGHT);
+    renderer.setClearColor(0xDDDDDD, 1);
+    document.body.appendChild(renderer.domElement);
+
+    var scene = new THREE.Scene();
+
+    var camera = new THREE.PerspectiveCamera(70, WIDTH / HEIGHT);
+    camera.position.z = 20;
+    camera.position.y = 5;
+    scene.add(camera);
+    const light = new THREE.AmbientLight(0x404040, 5);
+    scene.add(light);
+
+    // Aca se Definen los vértices del icosaedro
+const t = (1 + Math.sqrt(5)) / 2;
+const icosaVertices = [  [-1, t, 0],
+  [1, t, 0],
+  [-1, -t, 0],
+  [1, -t, 0],
+  [0, -1, t],
+  [0, 1, t],
+  [0, -1, -t],
+  [0, 1, -t],
+  [t, 0, -1],
+  [t, 0, 1],
+  [-t, 0, -1],
+  [-t, 0, 1]
+];
+
+// Aca se Definen las caras del icosaedro usando los vértices
+const icosaFaces = [  [0, 11, 5],
+  [0, 5, 1],
+  [0, 1, 7],
+  [0, 7, 10],
+  [0, 10, 11],
+  [1, 5, 9],
+  [5, 11, 4],
+  [11, 10, 2],
+  [10, 7, 6],
+  [7, 1, 8],
+  [3, 9, 4],
+  [3, 4, 2],
+  [3, 2, 6],
+  [3, 6, 8],
+  [3, 8, 9],
+  [4, 9, 5],
+  [2, 4, 11],
+  [6, 2, 10],
+  [8, 6, 7],
+  [9, 8, 1]
+];
+
+// Aqui se crea una nueva geometria */
+const geometry = new THREE.BufferGeometry();
+
+const vertices = new Float32Array(icosaVertices.flat());
+
+// se genera un array apartir de el arreglo */
+const indices = new Uint16Array(icosaFaces.flat());
+
+// Añade los vertices a la geometria */ 
+geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+
+// Se añaden la caras */
+geometry.setIndex(new THREE.BufferAttribute(indices, 1));
+
+const material = new THREE.MeshBasicMaterial({color: 0xF30808,wireframe:true});
+
+// Se crea la malla y se añade la geometria y el material */
+const mesh = new THREE.Mesh(geometry, material);
+
+
+// Se crea el mesh */
+scene.add(mesh);
+ 
+
+// Se crea el orbit controls */    
+const controls = new OrbitControls(camera, renderer.domElement);
+    const axesHelper = new THREE.AxesHelper( 1000 );
+    scene.add( axesHelper );
+
+    const size = 1000;
+const divisions = 1000;
+
+const gridHelper = new THREE.GridHelper( size, divisions );
+scene.add( gridHelper );
+
+
+    function animate() {
+
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera)
+    }
+    animate();
+   
+  </script>
+</body>
+
+</html>
